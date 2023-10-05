@@ -3,7 +3,7 @@
 # FILENAME: naive_bayes.py
 # SPECIFICATION: description of the program
 # FOR: CS 4210- Assignment #2
-# TIME SPENT: 2 hours
+# TIME SPENT: 4 hours
 #-----------------------------------------------------------*/
 #IMPORTANT NOTE: DO NOT USE ANY ADVANCED PYTHON LIBRARY TO COMPLETE THIS CODE SUCH
 # AS numpy OR pandas. You have to work here only with standard
@@ -17,6 +17,7 @@ import csv
 #reading the training data in a csv file
 #--> add your Python code here
 trainingData = []
+Header = []
 X = []
 Y = []
 
@@ -25,7 +26,9 @@ with open('weather_training.csv', 'r') as csvfile:
     for i, row in enumerate(reader):
         if i > 0:
             trainingData.append(row)
-            # print(row)
+        else:
+            Header.append(row)
+
 
 # convert to numerical values
 numericalFeatures = {0:['Sunny', 'Hot', 'High', 'Weak', 'Yes'],
@@ -51,8 +54,8 @@ for row in k:
     X.append(a)
     Y.append(b)
 
-print(X)
-print(Y)
+# print(X)
+# print(Y)
 
 
 #fitting the naive bayes to the data
@@ -89,18 +92,42 @@ for data in dbTest:
                     k2[i].append(key)
                     v2[i].append(ele)
 
-    #print(k2)
-    # print(v2)
-
     for row2 in k2:
         X_Test.append(row2)
 
-    print("X_Test: ", X_Test)
+    # print("X_Test: ", X_Test)
 
     predictSet = []
     class_predict = clf.predict_proba(X_Test)
     for r in class_predict:
         predictSet.append(r)
 
-    print("predict set: ", predictSet)
+
+    Header.append("Confidence")
+    print(Header)
+
+
+    f = []
+    index = 0
+    for r in predictSet:
+        # print(r)
+        f = [float(ele) for ele in r]
+        class0 = f[0]
+        class1 = f[1]
+        words = []
+        if class0 > 0.75 or class0 == 0.75:
+            for l in dbTesting[index]:
+                if l != '?':
+                    words.append(l)
+            print(words, "Yes", class0)
+        if class1 > 0.75 or class1 == 0.75:
+            for l in dbTesting[index]:
+                if l != '?':
+                    words.append(l)
+            print(words, "No", class1)
+        index = index + 1
+
+
+
+
 
